@@ -1,0 +1,33 @@
+baseURL: https://CyberAakash.github.io/zoho/
+languageCode: en-us
+title: Zoho Desk Docs
+
+module:
+  imports:
+    - path: github.com/imfing/hextra
+
+menu:
+  main:
+    - name: GitHub
+      url: https://github.com/CyberAakash/zoho
+      weight: 1
+      params:
+        type: icon
+        name: github
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+params:
+  navbar:
+    displayTitle: true
+    displayLogo: false
+  footer:
+    displayCopyright: false
+  theme:
+    default: dark
+    displayToggle: true
+  editURL:
+    enable: false
