@@ -20,6 +20,15 @@ markup:
     renderer:
       unsafe: true
 
+outputs:
+  page:
+    - html
+    - markdown
+  section:
+    - html
+    - rss
+    - markdown
+
 params:
   navbar:
     displayTitle: true
@@ -31,3 +40,6 @@ params:
     displayToggle: true
   editURL:
     enable: false
+  page:
+    contextMenu:
+      enable: true
