@@ -261,11 +261,52 @@ weight: 2
 .im-doc .trigger-card .trigger-path { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.82rem; color: var(--im-text-muted); margin-bottom: 0.4rem; }
 .im-doc .trigger-card .trigger-uses { font-size: 0.85rem; color: var(--im-purple); }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
+  /* Grids */
   .im-doc .comparison-grid { grid-template-columns: 1fr; }
   .im-doc .status-grid     { grid-template-columns: 1fr 1fr; }
+
+  /* Tier bar */
   .im-doc .tier-bar        { flex-wrap: wrap; }
   .im-doc .tier-segment    { flex: 1 1 45%; border-radius: 8px !important; margin: 2px; }
+
+  /* Tables: scroll horizontally instead of overflowing */
+  .im-doc table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  .im-doc th, .im-doc td { padding: 0.4rem 0.6rem; }
+
+  /* Headings */
+  .im-doc h2 { font-size: 1.2rem; margin-top: 2rem; }
+  .im-doc h3 { font-size: 1rem; }
+
+  /* Lifecycle boxes */
+  .im-doc .lifecycle-box { padding: 1rem 0.875rem; }
+  .im-doc .callout       { padding: 0.75rem 1rem; }
+
+  /* Step icons: never shrink, always circular */
+  .im-doc .arrow-step .step-icon {
+    min-width: 26px;
+    min-height: 26px;
+  }
+
+  /* Flow diagrams: smaller font, still scroll */
+  .im-doc .flow-diagram {
+    font-size: 0.72rem;
+    padding: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Code inline */
+  .im-doc code { font-size: 0.8rem; }
+}
+
+@media (max-width: 480px) {
+  .im-doc .status-grid { grid-template-columns: 1fr; }
+  .im-doc .tier-segment { flex: 1 1 100%; }
 }
 </style>
 
