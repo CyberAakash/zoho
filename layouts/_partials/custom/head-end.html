@@ -1,0 +1,304 @@
+<style>
+/* ═══════════════════════════════════════════════════════════
+   Panel Collapse Toggles (sidebar ← / → toc)
+   ═══════════════════════════════════════════════════════════ */
+
+.panel-toggle {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 22px;
+  height: 48px;
+  display: none;          /* shown only at appropriate breakpoints */
+  align-items: center;
+  justify-content: center;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  cursor: pointer;
+  color: #8b949e;
+  padding: 0;
+  transition: color 0.15s, background 0.15s;
+}
+.panel-toggle:hover { color: #e6edf3; background: #161b22; }
+.panel-toggle svg   { width: 13px; height: 13px; transition: transform 0.22s; }
+
+#sidebar-toggle { left: 0;  border-radius: 0 6px 6px 0; border-left: none;  }
+#toc-toggle     { right: 0; border-radius: 6px 0 0 6px;  border-right: none; }
+
+/* Desktop ≥ md: show sidebar toggle */
+@media (min-width: 768px) {
+  #sidebar-toggle { display: flex; }
+  .hextra-sidebar-container { transition: margin-left 0.25s ease, opacity 0.22s ease; }
+  .sidebar-collapsed .hextra-sidebar-container { margin-left: -16rem; opacity: 0; pointer-events: none; }
+  .sidebar-collapsed #sidebar-toggle svg { transform: rotate(180deg); }
+}
+
+/* Desktop ≥ xl: show TOC toggle */
+@media (min-width: 1280px) {
+  #toc-toggle { display: flex; }
+  .hextra-toc { transition: margin-right 0.25s ease, opacity 0.22s ease; }
+  .toc-collapsed .hextra-toc { margin-right: -16rem; opacity: 0; pointer-events: none; }
+  .toc-collapsed #toc-toggle svg { transform: rotate(180deg); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   Reading Progress Bar
+   ═══════════════════════════════════════════════════════════ */
+#zd-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #58a6ff, #bc8cff, #f78166);
+  z-index: 9999;
+  pointer-events: none;
+  transition: width 0.08s linear;
+  border-radius: 0 2px 2px 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   Floating Action Buttons (scroll-to-top, shortcuts hint)
+   ═══════════════════════════════════════════════════════════ */
+.zd-fab {
+  position: fixed;
+  right: 1.1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #30363d;
+  background: #0d1117;
+  color: #8b949e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  transition: color 0.15s, background 0.15s, transform 0.15s, opacity 0.2s;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  line-height: 1;
+}
+.zd-fab:hover { color: #e6edf3; background: #161b22; transform: translateY(-1px); }
+
+#zd-scroll-top {
+  bottom: 4.75rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+}
+#zd-scroll-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+#zd-shortcuts-btn { bottom: 1.1rem; }
+
+/* Hide FABs in focus mode */
+body.focus-mode #zd-shortcuts-btn,
+body.focus-mode #zd-scroll-top { opacity: 0 !important; pointer-events: none !important; }
+
+
+/* ═══════════════════════════════════════════════════════════
+   Keyboard Shortcuts Modal
+   ═══════════════════════════════════════════════════════════ */
+#zd-shortcuts-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,0.65);
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+#zd-shortcuts-modal.open { display: flex; }
+
+#zd-shortcuts-content {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem 1.75rem;
+  width: min(500px, 92vw);
+  max-height: 82vh;
+  overflow-y: auto;
+  position: relative;
+  color: #e6edf3;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+}
+#zd-shortcuts-content h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #58a6ff;
+  margin: 0 0 1.2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #21262d;
+  letter-spacing: 0.01em;
+}
+#zd-shortcuts-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  background: none;
+  border: none;
+  color: #8b949e;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  transition: color 0.12s, background 0.12s;
+  line-height: 1;
+}
+#zd-shortcuts-close:hover { color: #e6edf3; background: #21262d; }
+
+.zd-shortcut-section { margin-bottom: 1rem; }
+.zd-shortcut-section-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #484f58;
+  margin-bottom: 0.5rem;
+}
+.zd-shortcut-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem 1.25rem;
+}
+.zd-shortcut-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #8b949e;
+  padding: 0.15rem 0;
+}
+.zd-shortcut-row span:first-child { color: #c9d1d9; }
+.zd-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.zd-key kbd {
+  background: #21262d;
+  border: 1px solid #484f58;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: #c9d1d9;
+  line-height: 1.6;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   Focus Mode
+   ═══════════════════════════════════════════════════════════ */
+
+/* Slide navbar up off-screen */
+body.focus-mode .hextra-nav-container {
+  transform: translateY(-100%);
+}
+
+/* Collapse sidebar and TOC visually (JS also adds .sidebar-collapsed .toc-collapsed) */
+body.focus-mode .hextra-sidebar-container,
+body.focus-mode .hextra-toc,
+body.focus-mode .panel-toggle,
+body.focus-mode .hextra-footer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Focus top-bar */
+#zd-focus-bar {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 44px;
+  background: rgba(13,17,23,0.96);
+  border-bottom: 1px solid #30363d;
+  z-index: 9998;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+body.focus-mode #zd-focus-bar { display: flex; }
+
+#zd-focus-title {
+  font-size: 0.82rem;
+  color: #8b949e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 65%;
+}
+#zd-focus-exit {
+  font-size: 0.75rem;
+  color: #58a6ff;
+  background: rgba(88,166,255,0.08);
+  border: 1px solid rgba(88,166,255,0.25);
+  border-radius: 6px;
+  padding: 0.22rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+#zd-focus-exit:hover { background: rgba(88,166,255,0.18); color: #79c0ff; }
+
+/* Content in focus mode: expand and add top padding for focus bar */
+body.focus-mode main#content {
+  padding-top: 3.5rem !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   Print
+   ═══════════════════════════════════════════════════════════ */
+@media print {
+  /* Hide all chrome */
+  .hextra-nav-container,
+  .hextra-sidebar-container,
+  .hextra-toc,
+  .panel-toggle,
+  .hextra-footer,
+  .zd-fab,
+  #zd-focus-bar,
+  #zd-progress,
+  #zd-shortcuts-modal,
+  .hextra-search-wrapper { display: none !important; }
+
+  /* Light background for ink savings */
+  html, body { background: #fff !important; color: #1f2328 !important; }
+  main#content { max-width: 100% !important; padding: 0 !important; animation: none !important; }
+  .content { color: #1f2328 !important; }
+  .content h1, .content h2, .content h3, .content h4 { color: #1f2328 !important; page-break-after: avoid; }
+  .content pre { background: #f6f8fa !important; color: #24292f !important; border-color: #d0d7de !important; border-left-color: #0969da !important; }
+  .content :not(pre) > code { background: #f0f0f0 !important; color: #24292f !important; }
+
+  /* Show URLs after external links */
+  .content a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.78em; color: #666; }
+  .content a[href^="#"]::after   { content: none; }
+
+  /* Page break rules */
+  .content h2 { page-break-before: always; }
+  .content h2:first-of-type { page-break-before: avoid; }
+  .content table { page-break-inside: avoid; }
+  .content pre   { page-break-inside: avoid; }
+
+  /* im-doc content for print */
+  .im-doc { background: #fff !important; color: #1f2328 !important; }
+  .im-doc .callout, .im-doc .lifecycle-box, .im-doc .flow-diagram {
+    background: #f6f8fa !important; color: #1f2328 !important; border-color: #d0d7de !important;
+  }
+  .im-doc .badge { color: #1f2328 !important; background: #f6f8fa !important; border: 1px solid #d0d7de !important; }
+}
+</style>

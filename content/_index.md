@@ -1,10 +1,10 @@
 ---
 title: Zoho Desk Docs
+type: docs
+toc: false
 ---
 
 A personal knowledge base for Zoho Desk internals — documenting system behaviour, lifecycle flows, and implementation details for future reference.
-
-## Available Docs
 
 {{< cards >}}
   {{< card link="getting-started" title="Getting Started" icon="book-open" subtitle="How to use this site and what docs are available." >}}

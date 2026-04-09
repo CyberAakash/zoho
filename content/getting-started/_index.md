@@ -1,9 +1,8 @@
 ---
 title: Getting Started
+type: docs
 weight: 1
 ---
-
-# Getting Started
 
 This is a personal knowledge base for Zoho Desk internals — documenting system behaviour, lifecycle flows, and implementation details for future reference.
 

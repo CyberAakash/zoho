@@ -1,0 +1,97 @@
+/* ═══════════════════════════════════════════════════════
+   Zoho Desk Docs — Global Theme Polish
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Base ─────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+/* Text selection */
+::selection { background: rgba(88,166,255,0.25); color: #e6edf3; }
+
+/* Thin themed scrollbars */
+* { scrollbar-width: thin; scrollbar-color: #30363d transparent; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #484f58; }
+
+/* ── Typography ───────────────────────────────────────── */
+.content p,
+.content li   { line-height: 1.85; }
+.content h1   { letter-spacing: -0.02em; }
+.content h2   { letter-spacing: -0.015em; }
+.content h3   { letter-spacing: -0.01em; }
+
+/* ── Page Fade-in ─────────────────────────────────────── */
+@keyframes zd-fadein {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+main#content { animation: zd-fadein 0.22s ease-out; }
+
+/* ── Navbar ───────────────────────────────────────────── */
+.hextra-nav-container { transition: transform 0.3s ease; }
+.hextra-nav-container-blur {
+  backdrop-filter: blur(14px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(1.4) !important;
+}
+/* Subtle gradient accent line below navbar */
+.hextra-nav-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(88,166,255,0.18), transparent);
+  pointer-events: none;
+}
+
+/* ── Sidebar ──────────────────────────────────────────── */
+.hextra-sidebar-container a {
+  transition: color 0.12s ease, background 0.12s ease !important;
+}
+/* Active item left accent */
+.hextra-sidebar-active-item {
+  border-left: 2px solid #58a6ff !important;
+}
+
+/* ── Cards ────────────────────────────────────────────── */
+.hextra-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease !important;
+}
+.hextra-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.55) !important;
+  border-color: rgba(88,166,255,0.35) !important;
+}
+
+/* ── Code Blocks ──────────────────────────────────────── */
+.content pre {
+  border-left: 3px solid rgba(88,166,255,0.45) !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+.content :not(pre) > code {
+  font-size: 0.875em;
+  border-radius: 4px;
+}
+
+/* ── Links ────────────────────────────────────────────── */
+.content a:not([class*="hx:"]):not(.hextra-card) {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: opacity 0.12s ease;
+}
+.content a:not([class*="hx:"]):not(.hextra-card):hover { opacity: 0.82; }
+
+/* ── Search Results ───────────────────────────────────── */
+.hextra-search-results { border-color: #30363d !important; }
+.hextra-search-results li { transition: background 0.1s ease; }
+/* Better result item text contrast */
+.hextra-search-results .nextra-search-section { color: #8b949e; font-size: 0.78rem; }
+
+/* ── Mobile Tap Targets ───────────────────────────────── */
+@media (max-width: 767px) {
+  .hextra-sidebar-container a,
+  .hextra-sidebar-container button { min-height: 44px; }
+  /* Touch feedback */
+  .hextra-sidebar-container a:active { opacity: 0.6; }
+}

@@ -1,10 +1,23 @@
 ---
 title: IM Channel License Handler
+type: docs
 description: Complete lifecycle guide — channel statuses, plan tier limits, upgrade/downgrade flows, department enable/disable scenarios.
 weight: 2
 ---
 
 <style>
+/* Hide the Markdown headings that feed the TOC — the styled HTML headings are the visible ones */
+.im-doc-toc-anchor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
 .im-doc {
   --im-bg: #0d1117;
   --im-surface: #161b22;
@@ -312,6 +325,18 @@ weight: 2
 
 <div class="im-doc">
 
+<span class="im-doc-toc-anchor">
+
+## 1. Channel Status Lifecycle {#channel-status-lifecycle}
+
+### The 4 Statuses {#the-4-statuses}
+
+### Two Types of Records {#two-types-of-records}
+
+### Valid State Transitions {#valid-state-transitions}
+
+</span>
+
 <!-- ═══════════════════════════════════════════════════════ -->
 <h2>1. Channel Status Lifecycle</h2>
 
@@ -443,6 +468,12 @@ weight: 2
 
 <hr class="section-divider">
 
+<span class="im-doc-toc-anchor">
+
+## 2. Plan Tiers & Limits {#plan-tiers-limits}
+
+</span>
+
 <!-- ═══════════════════════════════════════════════════════ -->
 <h2>2. Plan Tiers &amp; Limits</h2>
 
@@ -459,6 +490,20 @@ weight: 2
 </div>
 
 <hr class="section-divider">
+
+<span class="im-doc-toc-anchor">
+
+## 3. Plan Upgrade/Downgrade Lifecycles {#plan-upgrade-downgrade}
+
+### Lifecycle 1: Free → Enterprise → Free {#lifecycle-1}
+
+### Lifecycle 2: Enterprise → Free → Enterprise {#lifecycle-2}
+
+### Lifecycle 3: Standard → Enterprise → Standard {#lifecycle-3}
+
+### Lifecycle 4: Enterprise → Standard → Enterprise {#lifecycle-4}
+
+</span>
 
 <!-- ═══════════════════════════════════════════════════════ -->
 <h2>3. Plan Upgrade/Downgrade Lifecycles</h2>
@@ -789,6 +834,20 @@ weight: 2
 
 <hr class="section-divider">
 
+<span class="im-doc-toc-anchor">
+
+## 4. Department Enable/Disable Lifecycles {#dept-enable-disable}
+
+### Lifecycle 5a: Dept ON → Disable → Enable (UNKNOWN) {#lifecycle-5a}
+
+### Lifecycle 5b: Dept ON → Disable → Enable (LICENSE_DISABLED) {#lifecycle-5b}
+
+### Lifecycle 6a: Dept OFF → Enable → Disable (UNKNOWN) {#lifecycle-6a}
+
+### Lifecycle 6b: Dept OFF → Enable → Disable (LICENSE_DISABLED) {#lifecycle-6b}
+
+</span>
+
 <!-- ═══════════════════════════════════════════════════════ -->
 <h2>4. Department Enable/Disable Lifecycles</h2>
 
@@ -1090,6 +1149,12 @@ weight: 2
 
 <hr class="section-divider">
 
+<span class="im-doc-toc-anchor">
+
+## 5. Manual Channel Operations {#manual-operations}
+
+</span>
+
 <!-- ═══════════════════════════════════════════════════════ -->
 <h2>5. Manual Channel Operations</h2>
 
@@ -1179,6 +1244,12 @@ weight: 2
 
 <hr class="section-divider">
 
+<span class="im-doc-toc-anchor">
+
+## 6. Who Calls What (Trigger Map) {#trigger-map}
+
+</span>
+
 <!-- ═══════════════════════════════════════════════════════ -->
 <h2>6. Who Calls What (Trigger Map)</h2>
 
@@ -1223,6 +1294,12 @@ weight: 2
 
 <hr class="section-divider">
 
+<span class="im-doc-toc-anchor">
+
+## 7. DISABLED vs LICENSE_DISABLED {#disabled-vs-license-disabled}
+
+</span>
+
 <!-- ═══════════════════════════════════════════════════════ -->
 <h2>7. DISABLED vs LICENSE_DISABLED — The Key Distinction</h2>
 
@@ -1258,6 +1335,12 @@ weight: 2
 
 <hr class="section-divider">
 
+<span class="im-doc-toc-anchor">
+
+## 8. SDK Truth Source {#sdk-truth-source}
+
+</span>
+
 <!-- ═══════════════════════════════════════════════════════ -->
 <h2>8. SDK Truth Source — SDKChannelMapBuilder</h2>
 
@@ -1289,6 +1372,12 @@ weight: 2
 </div>
 
 <hr class="section-divider">
+
+<span class="im-doc-toc-anchor">
+
+## 9. Complete Visual: Every Transition {#every-transition}
+
+</span>
 
 <!-- ═══════════════════════════════════════════════════════ -->
 <h2>9. Complete Visual: Every Transition</h2>

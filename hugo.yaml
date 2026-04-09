@@ -8,9 +8,13 @@ module:
 
 menu:
   main:
+    - name: Search
+      weight: 1
+      params:
+        type: search
     - name: GitHub
       url: https://github.com/CyberAakash/zoho
-      weight: 1
+      weight: 2
       params:
         type: icon
         name: github
@@ -35,9 +39,10 @@ params:
     displayLogo: false
   footer:
     displayCopyright: false
+    displayPoweredBy: false
   theme:
     default: dark
-    displayToggle: true
+    displayToggle: false
   editURL:
     enable: false
   page:

@@ -1,0 +1,326 @@
+{{- /* ── Reading Progress Bar ───────────────────────────────── */}}
+<div id="zd-progress" aria-hidden="true"></div>
+
+{{- /* ── Panel Toggle Buttons ──────────────────────────────── */}}
+<button id="sidebar-toggle" class="panel-toggle" aria-label="Toggle sidebar" title="Toggle sidebar  [">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+  </svg>
+</button>
+<button id="toc-toggle" class="panel-toggle" aria-label="Toggle table of contents" title="Toggle table of contents  ]">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+  </svg>
+</button>
+
+{{- /* ── Scroll to Top ──────────────────────────────────────── */}}
+<button id="zd-scroll-top" class="zd-fab" aria-label="Scroll to top" title="Scroll to top">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" width="15" height="15">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/>
+  </svg>
+</button>
+
+{{- /* ── Shortcuts Hint Button ─────────────────────────────── */}}
+<button id="zd-shortcuts-btn" class="zd-fab" aria-label="Keyboard shortcuts" title="Keyboard shortcuts  ?">?</button>
+
+{{- /* ── Focus Mode Bar ────────────────────────────────────── */}}
+<div id="zd-focus-bar" role="toolbar" aria-label="Focus mode toolbar">
+  <span id="zd-focus-title"></span>
+  <button id="zd-focus-exit">Exit Focus&nbsp;&nbsp;(F)</button>
+</div>
+
+{{- /* ── Keyboard Shortcuts Modal ─────────────────────────── */}}
+<div id="zd-shortcuts-modal" role="dialog" aria-modal="true" aria-labelledby="zd-shortcuts-heading">
+  <div id="zd-shortcuts-content">
+    <button id="zd-shortcuts-close" aria-label="Close shortcuts">✕</button>
+    <h3 id="zd-shortcuts-heading">Keyboard Shortcuts</h3>
+
+    <div class="zd-shortcut-section">
+      <div class="zd-shortcut-section-title">Navigation</div>
+      <div class="zd-shortcut-grid">
+        <div class="zd-shortcut-row">
+          <span>Search</span>
+          <span class="zd-key"><kbd>/</kbd>&nbsp;or&nbsp;<kbd>Ctrl&nbsp;K</kbd></span>
+        </div>
+        <div class="zd-shortcut-row">
+          <span>Next section</span>
+          <span class="zd-key"><kbd>J</kbd></span>
+        </div>
+        <div class="zd-shortcut-row">
+          <span>Toggle sidebar</span>
+          <span class="zd-key"><kbd>[</kbd></span>
+        </div>
+        <div class="zd-shortcut-row">
+          <span>Prev section</span>
+          <span class="zd-key"><kbd>K</kbd></span>
+        </div>
+        <div class="zd-shortcut-row">
+          <span>Toggle TOC</span>
+          <span class="zd-key"><kbd>]</kbd></span>
+        </div>
+        <div class="zd-shortcut-row">
+          <span>Scroll to top</span>
+          <span class="zd-key"><kbd>G</kbd>&nbsp;<kbd>G</kbd></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="zd-shortcut-section">
+      <div class="zd-shortcut-section-title">Modes</div>
+      <div class="zd-shortcut-grid">
+        <div class="zd-shortcut-row">
+          <span>Focus mode</span>
+          <span class="zd-key"><kbd>F</kbd></span>
+        </div>
+        <div class="zd-shortcut-row">
+          <span>This dialog</span>
+          <span class="zd-key"><kbd>?</kbd></span>
+        </div>
+        <div class="zd-shortcut-row">
+          <span>Exit / Close</span>
+          <span class="zd-key"><kbd>Esc</kbd></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Utility ─────────────────────────────────────────────── */
+  function qs(sel) { return document.querySelector(sel); }
+  function isTyping() {
+    var el = document.activeElement;
+    return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+  }
+
+  var page = qs('.hextra-max-page-width') || document.body;
+
+  /* ── Reading Progress Bar ─────────────────────────────────── */
+  var progressBar = qs('#zd-progress');
+  var rafProg = null;
+  function updateProgress() {
+    var total = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = total > 0 ? Math.min(100, (window.scrollY / total) * 100) : 0;
+    if (progressBar) progressBar.style.width = pct + '%';
+    rafProg = null;
+  }
+  window.addEventListener('scroll', function () {
+    if (!rafProg) rafProg = requestAnimationFrame(updateProgress);
+  }, { passive: true });
+
+  /* ── Panel Toggles (sidebar / TOC) ───────────────────────── */
+  var sidebarBtn = qs('#sidebar-toggle');
+  var tocBtn     = qs('#toc-toggle');
+
+  // Restore saved panel state
+  if (localStorage.getItem('sidebar-collapsed') === 'true') page.classList.add('sidebar-collapsed');
+  if (localStorage.getItem('toc-collapsed')     === 'true') page.classList.add('toc-collapsed');
+
+  if (sidebarBtn) {
+    sidebarBtn.addEventListener('click', function () {
+      page.classList.toggle('sidebar-collapsed');
+      localStorage.setItem('sidebar-collapsed', page.classList.contains('sidebar-collapsed'));
+    });
+  }
+  if (tocBtn) {
+    tocBtn.addEventListener('click', function () {
+      page.classList.toggle('toc-collapsed');
+      localStorage.setItem('toc-collapsed', page.classList.contains('toc-collapsed'));
+    });
+  }
+
+  /* ── Scroll to Top ───────────────────────────────────────── */
+  var scrollTopBtn = qs('#zd-scroll-top');
+  if (scrollTopBtn) {
+    window.addEventListener('scroll', function () {
+      scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+    scrollTopBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  /* ── Shortcuts Modal ─────────────────────────────────────── */
+  var modal        = qs('#zd-shortcuts-modal');
+  var shortcutsBtn = qs('#zd-shortcuts-btn');
+  var closeBtn     = qs('#zd-shortcuts-close');
+
+  function openModal()  { if (modal) { modal.classList.add('open');    modal.querySelector('#zd-shortcuts-close').focus(); } }
+  function closeModal() { if (modal) { modal.classList.remove('open'); } }
+
+  if (shortcutsBtn) shortcutsBtn.addEventListener('click', openModal);
+  if (closeBtn)     closeBtn.addEventListener('click', closeModal);
+  if (modal)        modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+
+  /* ── Focus Mode ──────────────────────────────────────────── */
+  var focusBar   = qs('#zd-focus-bar');
+  var focusTitle = qs('#zd-focus-title');
+  var focusExit  = qs('#zd-focus-exit');
+  var isFocused  = false;
+  var preFocus   = {};  // snapshot of panel state before entering focus
+
+  function enterFocus() {
+    isFocused = true;
+    // Snapshot current panel collapse state, then force-collapse both
+    preFocus.sidebar = page.classList.contains('sidebar-collapsed');
+    preFocus.toc     = page.classList.contains('toc-collapsed');
+    page.classList.add('sidebar-collapsed', 'toc-collapsed');
+    document.body.classList.add('focus-mode');
+    // Show page title in focus bar
+    var h1 = qs('main#content h1');
+    if (focusTitle) focusTitle.textContent = h1 ? h1.textContent : document.title;
+    sessionStorage.setItem('focus-mode', 'true');
+  }
+
+  function exitFocus() {
+    isFocused = false;
+    document.body.classList.remove('focus-mode');
+    // Restore panel state from before focus was entered
+    if (!preFocus.sidebar) page.classList.remove('sidebar-collapsed');
+    if (!preFocus.toc)     page.classList.remove('toc-collapsed');
+    sessionStorage.removeItem('focus-mode');
+  }
+
+  function toggleFocus() { if (isFocused) exitFocus(); else enterFocus(); }
+
+  if (focusExit) focusExit.addEventListener('click', exitFocus);
+
+  // Restore focus mode from session (e.g. after page nav)
+  if (sessionStorage.getItem('focus-mode') === 'true') {
+    // Defer slightly to let panel state from localStorage apply first
+    setTimeout(enterFocus, 0);
+  }
+
+  /* ── Section Jump (j / k) ────────────────────────────────── */
+  function getSections() {
+    return Array.from(document.querySelectorAll('main#content h2[id], main#content h3[id]'));
+  }
+  function jumpSection(dir) {
+    var sections = getSections();
+    if (!sections.length) return;
+    var threshold = window.scrollY + 100;
+    var idx;
+    if (dir === 'next') {
+      idx = sections.findIndex(function (s) { return s.getBoundingClientRect().top + window.scrollY > threshold; });
+      if (idx === -1) idx = sections.length - 1;
+    } else {
+      for (var i = sections.length - 1; i >= 0; i--) {
+        if (sections[i].getBoundingClientRect().top + window.scrollY < threshold - 10) { idx = i; break; }
+      }
+      if (idx === undefined) idx = 0;
+    }
+    sections[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ── gg (double-G) scroll to top ────────────────────────── */
+  var lastG = 0;
+  function handleGG() {
+    var now = Date.now();
+    if (now - lastG < 500) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lastG = 0;
+    } else {
+      lastG = now;
+    }
+  }
+
+  /* ── Mobile Swipe Gesture ────────────────────────────────── */
+  var touchX0 = 0, touchY0 = 0;
+  document.addEventListener('touchstart', function (e) {
+    touchX0 = e.touches[0].clientX;
+    touchY0 = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - touchX0;
+    var dy = e.changedTouches[0].clientY - touchY0;
+    // Only register mostly-horizontal swipes of ≥ 55px
+    if (Math.abs(dx) < 55 || Math.abs(dx) < Math.abs(dy) * 0.8) return;
+
+    // Find the hamburger menu button Hextra injects
+    var hamburger = qs('[data-mobile-menu-toggle]') || qs('.hextra-hamburger-menu') || qs('[aria-label*="menu" i]');
+    if (!hamburger) return;
+
+    var sidebarEl = qs('.hextra-sidebar-container');
+    if (!sidebarEl) return;
+    // Hextra uses translate3d(0,0,0) when the mobile sidebar is open
+    var isOpen = sidebarEl.style.transform === 'translate3d(0, 0, 0)' ||
+                 sidebarEl.classList.contains('hx:max-md:[transform:translate3d(0,0,0)]') ||
+                 getComputedStyle(sidebarEl).transform.indexOf('matrix') !== -1;
+
+    if (dx > 0 && touchX0 < 40 && !isOpen) {
+      // Swipe right from left edge → open sidebar
+      hamburger.click();
+    } else if (dx < 0 && isOpen) {
+      // Swipe left → close sidebar
+      hamburger.click();
+    }
+  }, { passive: true });
+
+  /* ── Global Keyboard Shortcuts ───────────────────────────── */
+  document.addEventListener('keydown', function (e) {
+    // In modals: only allow Escape
+    if (modal && modal.classList.contains('open')) {
+      if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
+      return;
+    }
+
+    // In text inputs: only allow Escape
+    if (isTyping()) {
+      if (e.key === 'Escape') {
+        document.activeElement.blur();
+        if (isFocused) exitFocus();
+      }
+      return;
+    }
+
+    switch (e.key) {
+      case '/':
+        e.preventDefault();
+        var searchInput = qs('.hextra-search-input') || qs('input[type="search"]');
+        if (searchInput) searchInput.focus();
+        break;
+
+      case '[':
+        if (window.innerWidth >= 768 && sidebarBtn) sidebarBtn.click();
+        break;
+
+      case ']':
+        if (window.innerWidth >= 1280 && tocBtn) tocBtn.click();
+        break;
+
+      case 'f':
+      case 'F':
+        if (!e.ctrlKey && !e.metaKey) toggleFocus();
+        break;
+
+      case '?':
+        e.preventDefault();
+        openModal();
+        break;
+
+      case 'j':
+      case 'J':
+        jumpSection('next');
+        break;
+
+      case 'k':
+      case 'K':
+        jumpSection('prev');
+        break;
+
+      case 'g':
+      case 'G':
+        handleGG();
+        break;
+
+      case 'Escape':
+        if (isFocused) exitFocus();
+        break;
+    }
+  });
+
+})();
+</script>
